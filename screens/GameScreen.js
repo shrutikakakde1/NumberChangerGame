@@ -14,6 +14,8 @@ import Card from '../components/ui/Card';
 import Colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import GuessLogItemContainer from '../components/game/GuessLogItemContaiber';
+import Orientation from 'react-native-orientation-locker';
+
 function generateRandomNumber(min, max, exclude) {
   const randomNumber = Math.floor(Math.random() * (max - min)) + min;
 
@@ -28,6 +30,17 @@ function GameScreen({userNumber, gameOver}) {
   const initialGuess = generateRandomNumber(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [roundGuess, setRoundGuess] = useState([initialGuess]);
+
+  // used to lock only this screen tp portrait
+  useEffect(() => {
+    // Lock to portrait when component mounts
+    Orientation.lockToPortrait();
+
+    return () => {
+      // Reset to unspecified when component unmounts
+      Orientation.unlockAllOrientations();
+    };
+  }, []);
 
   useEffect(() => {
     if (currentGuess === userNumber) {
